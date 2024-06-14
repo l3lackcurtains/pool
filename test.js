@@ -134,4 +134,4 @@ async function createPost() {
   }
 }
 
-setInterval(createPost, 1000 * 12);
+setInterval(createPost, 1000 * 30);
