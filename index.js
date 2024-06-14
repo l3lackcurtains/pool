@@ -6,9 +6,13 @@ const {
   countAllCommits,
   getCommitBySignature,
   getHashtags,
- } = require("./modules/db");
+} = require("./modules/db");
 
 const { app, port } = require("./modules/server");
+
+const { verifyCommit } = require("alberti-protocol-sdk");
+
+const difficulty = process.env.ALBERTI_DIFFICULTY || 3;
 
 syncDatabase();
 
@@ -36,24 +40,25 @@ app.get("/hashtags", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-   const count = await countAllCommits();
+  const count = await countAllCommits();
 
   res.json({
     time: new Date(),
     totalCommits: count,
+    difficulty: difficulty,
     guide: "https://github.com/AlbertiProtocol/pool",
   });
 });
 
 app.post("/commit", async (req, res) => {
-  const { commitAt, data, publicKey, signature, type } = req.body;
+  const { commitAt, data, publicKey, signature, type, nonce } = req.body;
 
-  if (!data || !publicKey || !signature || !type) {
-    return res
-      .status(400)
-      .send(
-        "Missing required fields: address, data, publicKey, signature, type"
-      );
+  if (!commitAt || !data || !publicKey || !signature || !type || !nonce) {
+    return res.status(400).send("Missing required fields");
+  }
+
+  if (!verifyCommit(req.body, difficulty)) {
+    return res.status(400).send("Invalid signature");
   }
 
   let dynamicData = {};
@@ -67,7 +72,8 @@ app.post("/commit", async (req, res) => {
       signature,
       dynamicData,
       publicKey,
-      type
+      type,
+      nonce
     );
 
     res.json(commit);

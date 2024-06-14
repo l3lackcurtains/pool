@@ -21,22 +21,31 @@ const Commit = sequelize.define(
       type: DataTypes.JSON,
       allowNull: true,
     },
+
     address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     publicKey: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     signature: {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
     },
+
     type: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    nonce: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {
@@ -49,17 +58,25 @@ const syncDatabase = async () => {
   console.log("The table for the Commit model was just (re)created!");
 };
 
-const createCommit = async (commitAt, signature, data, publicKey, type) => {
+const createCommit = async (
+  commitAt,
+  signature,
+  data,
+  publicKey,
+  type,
+  nonce
+) => {
   const address = publicKeyToAddress(publicKey);
 
   try {
     const commit = await Commit.create({
       commitAt,
-      signature,
-      address,
       data,
+      address,
       publicKey,
+      signature,
       type,
+      nonce,
     });
     return commit;
   } catch (error) {
