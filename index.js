@@ -14,15 +14,6 @@ const { app, port } = require("./modules/server");
 
 syncDatabase();
 
-app.get("/", (req, res) => {
-  deleteOldCommits(400);
-
-  res.json({
-    time: new Date(),
-    guide: "https://github.com/AlbertiProtocol/pool",
-  });
-});
-
 app.get("/commits/:offset", async (req, res) => {
   const offset = req.params.offset || 0;
   const commits = await getAllCommits(offset);
@@ -54,6 +45,17 @@ app.get("/count", async (req, res) => {
 app.get("/hashtags", async (req, res) => {
   const hashtags = await getHashtags();
   res.json(hashtags);
+});
+
+// required routes
+
+app.get("/", (req, res) => {
+  deleteOldCommits(400);
+
+  res.json({
+    time: new Date(),
+    guide: "https://github.com/AlbertiProtocol/pool",
+  });
 });
 
 app.post("/commit", async (req, res) => {

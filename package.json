@@ -19,6 +19,7 @@
   "dependencies": {
     "alberti-protocol-sdk": "^1.0.1",
     "axios": "^1.7.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "sequelize": "^6.37.3",
