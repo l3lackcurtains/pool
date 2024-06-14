@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/AlbertiProtocol/pool#readme",
   "dependencies": {
-    "alberti-protocol-sdk": "^1.0.1",
+    "alberti-protocol-sdk": "^1.0.2",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

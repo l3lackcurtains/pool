@@ -107,6 +107,8 @@ const axios = require("axios");
 
 const pool = "http://127.0.0.1:5467";
 
+const difficulty = 5;
+
 async function createPost() {
   const identity = createIdentity();
 
@@ -123,7 +125,7 @@ async function createPost() {
     post_tags.sort(() => Math.random() - 0.5).slice(0, 2)
   );
 
-  const bodydata = createCommit(privateKey, postdata, "post");
+  const bodydata = createCommit(privateKey, postdata, "post", difficulty);
 
   try {
     const response = await axios.post(pool + "/commit", bodydata);
@@ -134,4 +136,4 @@ async function createPost() {
   }
 }
 
-setInterval(createPost, 1000 * 30);
+createPost();

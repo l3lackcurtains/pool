@@ -12,7 +12,7 @@ const { app, port } = require("./modules/server");
 
 const { verifyCommit } = require("alberti-protocol-sdk");
 
-const difficulty = process.env.ALBERTI_DIFFICULTY || 3;
+const difficulty = process.env.ALBERTI_DIFFICULTY || 4;
 
 syncDatabase();
 
