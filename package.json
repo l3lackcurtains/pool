@@ -1,0 +1,26 @@
+{
+  "name": "alberti-protocol-pool",
+  "version": "1.0.0",
+  "description": "A JS Implementation Of Alberti Protocol Pool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlbertiProtocol/pool.git"
+  },
+  "author": "AlbertiProtocol",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlbertiProtocol/pool/issues"
+  },
+  "homepage": "https://github.com/AlbertiProtocol/pool#readme",
+  "dependencies": {
+    "alberti-protocol-sdk": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
+  }
+}
