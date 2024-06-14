@@ -4,11 +4,9 @@ const {
   getAllCommits,
   getUniqueAddresses,
   countAllCommits,
-  getCommitsByAddress,
   getCommitBySignature,
   getHashtags,
-  deleteOldCommits,
-} = require("./modules/db");
+ } = require("./modules/db");
 
 const { app, port } = require("./modules/server");
 
@@ -16,20 +14,15 @@ syncDatabase();
 
 app.get("/commits/:offset", async (req, res) => {
   const offset = req.params.offset || 0;
-  const commits = await getAllCommits(offset);
+  const address = req.query.address || false;
+  const commits = await getAllCommits(offset, address);
   res.json(commits);
 });
 
-app.get("/commits/signature/:signature", async (req, res) => {
+app.get("/signature/:signature", async (req, res) => {
   const signature = req.params.signature;
   const commit = await getCommitBySignature(signature);
   res.json(commit);
-});
-
-app.get("/commits/address/:address", async (req, res) => {
-  const address = req.params.address;
-  const commits = await getCommitsByAddress(address);
-  res.json(commits);
 });
 
 app.get("/addresses", async (req, res) => {
@@ -37,23 +30,17 @@ app.get("/addresses", async (req, res) => {
   res.json(uniqueAddresses);
 });
 
-app.get("/count", async (req, res) => {
-  const count = await countAllCommits();
-  res.json({ count });
-});
-
 app.get("/hashtags", async (req, res) => {
   const hashtags = await getHashtags();
   res.json(hashtags);
 });
 
-// required routes
-
-app.get("/", (req, res) => {
-  deleteOldCommits(400);
+app.get("/", async (req, res) => {
+   const count = await countAllCommits();
 
   res.json({
     time: new Date(),
+    totalCommits: count,
     guide: "https://github.com/AlbertiProtocol/pool",
   });
 });

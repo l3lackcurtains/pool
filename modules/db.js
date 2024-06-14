@@ -45,7 +45,7 @@ const Commit = sequelize.define(
 );
 
 const syncDatabase = async () => {
-  await sequelize.sync({ force: true }); 
+  await sequelize.sync({ force: true });
   console.log("The table for the Commit model was just (re)created!");
 };
 
@@ -68,12 +68,20 @@ const createCommit = async (commitAt, signature, data, publicKey, type) => {
   }
 };
 
-const getAllCommits = async (offset) => {
+const getAllCommits = async (offset, address) => {
+  const qobj = {
+    offset: offset,
+    limit: 1000,
+  };
+
+  if (address) {
+    qobj.where = {
+      address: address,
+    };
+  }
+
   try {
-    const commits = await Commit.findAll({
-      offset: offset,
-      limit: 1000,
-    });
+    const commits = await Commit.findAll(qobj);
     return commits;
   } catch (error) {
     console.error("Error fetching commits:", error);
@@ -99,20 +107,6 @@ const countAllCommits = async () => {
     return count;
   } catch (error) {
     console.error("Error counting commits:", error);
-    throw error;
-  }
-};
-
-const getCommitsByAddress = async (address) => {
-  try {
-    const commits = await Commit.findAll({
-      where: {
-        address: address,
-      },
-    });
-    return commits;
-  } catch (error) {
-    console.error("Error fetching commits:", error);
     throw error;
   }
 };
@@ -150,27 +144,6 @@ const getHashtags = async () => {
   }
 };
 
-const deleteOldCommits = async (days) => {
-  try {
-    const commits = await Commit.findAll({
-      where: {
-        commitAt: {
-          [Op.lt]: new Date(new Date() - days * 24 * 60 * 60 * 1000),
-        },
-      },
-    });
-
-    commits.forEach(async (commit) => {
-      await commit.destroy();
-    });
-
-    return commits;
-  } catch (error) {
-    console.error("Error deleting commits:", error);
-    throw error;
-  }
-};
-
 module.exports = {
   syncDatabase,
   sequelize,
@@ -178,8 +151,6 @@ module.exports = {
   getAllCommits,
   getUniqueAddresses,
   countAllCommits,
-  getCommitsByAddress,
   getCommitBySignature,
   getHashtags,
-  deleteOldCommits,
 };
