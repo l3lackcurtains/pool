@@ -1,3 +1,102 @@
+const post_tags = [
+  "love",
+  "instagood",
+  "photooftheday",
+  "fashion",
+  "beautiful",
+  "happy",
+  "cute",
+  "tbt",
+  "like4like",
+  "followme",
+  "picoftheday",
+  "follow",
+  "me",
+  "selfie",
+  "summer",
+  "art",
+  "instadaily",
+  "friends",
+  "repost",
+  "nature",
+  "girl",
+  "fun",
+  "style",
+  "smile",
+  "food",
+  "instalike",
+  "family",
+  "travel",
+  "fitness",
+  "igers",
+  "tagsforlikes",
+  "nofilter",
+  "life",
+  "beauty",
+  "amazing",
+  "sun",
+  "instagram",
+  "photography",
+  "vscocam",
+  "music",
+  "follow4follow",
+  "ootd",
+  "makeup",
+  "vsco",
+  "swag",
+  "l4l",
+  "f4f",
+  "pretty",
+  "model",
+  "motivation",
+  "party",
+  "design",
+  "instapic",
+  "cool",
+  "baby",
+  "dog",
+  "lol",
+  "funny",
+  "instacool",
+  "girls",
+  "hair",
+  "beach",
+  "sunrise",
+  "night",
+  "bestoftheday",
+  "sky",
+  "photo",
+  "clouds",
+  "sunset",
+  "handmade",
+  "followback",
+  "fitfam",
+  "instafollow",
+  "drawing",
+  "black",
+  "white",
+  "pink",
+  "blue",
+  "red",
+  "green",
+  "artistic",
+  "instaart",
+  "illustration",
+  "instapicture",
+  "fashionista",
+  "home",
+  "christmas",
+  "newyear",
+  "happynewyear",
+  "holiday",
+  "snow",
+  "winter",
+  "spring",
+  "autumn",
+  "summer",
+  "fall",
+];
+
 const {
   postTemplate,
   createCommit,
@@ -13,15 +112,16 @@ const identity = createIdentity();
 const privateKey = identity.privateKey;
 
 async function createPost() {
-  // get bitcoin price
   const priceBTC = await axios.get(
     "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
   );
 
   const post_content = "Bitcoin Price : " + priceBTC.data.bitcoin.usd;
-  const post_tags = ["bitcoin", "cryptocurrency"];
 
-  const postdata = postTemplate(post_content, post_tags);
+  const postdata = postTemplate(
+    post_content,
+    post_tags.sort(() => Math.random() - 0.5).concat(post_tags.slice(0, 2))
+  );
 
   const bodydata = createCommit(privateKey, postdata, "post");
 
@@ -34,16 +134,4 @@ async function createPost() {
   }
 }
 
-async function getCommits() {
-  try {
-    const response = await axios.get(pool + "/commits");
-
-    console.log(response.data);
-  } catch (error) {
-    console.error("Error occurred:", error);
-  }
-}
-
-// getCommits();
-
-createPost();
+setInterval(createPost, 1000 * 12);
