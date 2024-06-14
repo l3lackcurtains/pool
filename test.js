@@ -120,7 +120,7 @@ async function createPost() {
 
   const postdata = postTemplate(
     post_content,
-    post_tags.sort(() => Math.random() - 0.5).concat(post_tags.slice(0, 2))
+    post_tags.sort(() => Math.random() - 0.5).slice(0, 2)
   );
 
   const bodydata = createCommit(privateKey, postdata, "post");
