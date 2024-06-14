@@ -44,13 +44,11 @@ const Commit = sequelize.define(
   }
 );
 
-// Sync the model with the database
 const syncDatabase = async () => {
-  await sequelize.sync({ force: true }); // Creates the table if it doesn't exist (and drops it if it does)
+  await sequelize.sync({ force: true }); 
   console.log("The table for the Commit model was just (re)created!");
 };
 
-// Function to create a new Commit entry
 const createCommit = async (commitAt, signature, data, publicKey, type) => {
   const address = publicKeyToAddress(publicKey);
 
@@ -70,11 +68,13 @@ const createCommit = async (commitAt, signature, data, publicKey, type) => {
   }
 };
 
-const getAllCommits = async () => {
+const getAllCommits = async (offset) => {
   try {
-    const commits = await Commit.findAll();
-
-    return commits.sort(() => Math.random() - 0.5).slice(0, 1000);
+    const commits = await Commit.findAll({
+      offset: offset,
+      limit: 1000,
+    });
+    return commits;
   } catch (error) {
     console.error("Error fetching commits:", error);
     throw error;
@@ -86,7 +86,7 @@ const getUniqueAddresses = async () => {
     const uniqueAddresses = await Commit.aggregate("address", "DISTINCT", {
       plain: false,
     });
-    return uniqueAddresses;
+    return uniqueAddresses.map((addressObj) => addressObj.DISTINCT);
   } catch (error) {
     console.error("Error fetching unique addresses:", error);
     throw error;
@@ -108,20 +108,6 @@ const getCommitsByAddress = async (address) => {
     const commits = await Commit.findAll({
       where: {
         address: address,
-      },
-    });
-    return commits;
-  } catch (error) {
-    console.error("Error fetching commits:", error);
-    throw error;
-  }
-};
-
-const getCommitsByType = async (type) => {
-  try {
-    const commits = await Commit.findAll({
-      where: {
-        type: type,
       },
     });
     return commits;
@@ -164,7 +150,7 @@ const getHashtags = async () => {
   }
 };
 
- const deleteOldCommits = async (days) => {
+const deleteOldCommits = async (days) => {
   try {
     const commits = await Commit.findAll({
       where: {
@@ -193,8 +179,7 @@ module.exports = {
   getUniqueAddresses,
   countAllCommits,
   getCommitsByAddress,
-  getCommitsByType,
   getCommitBySignature,
   getHashtags,
-  deleteOldCommits
+  deleteOldCommits,
 };

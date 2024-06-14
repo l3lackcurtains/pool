@@ -6,7 +6,6 @@ const {
   countAllCommits,
   getCommitsByAddress,
   getCommitBySignature,
-  getCommitsByType,
   getHashtags,
   deleteOldCommits,
 } = require("./modules/db");
@@ -19,13 +18,14 @@ app.get("/", (req, res) => {
   deleteOldCommits(400);
 
   res.json({
-    message: "Welcome to the Commit API",
+    time: new Date(),
     guide: "https://github.com/AlbertiProtocol/pool",
   });
 });
 
-app.get("/commits", async (req, res) => {
-  const commits = await getAllCommits();
+app.get("/commits/:offset", async (req, res) => {
+  const offset = req.params.offset || 0;
+  const commits = await getAllCommits(offset);
   res.json(commits);
 });
 
@@ -38,12 +38,6 @@ app.get("/commits/signature/:signature", async (req, res) => {
 app.get("/commits/address/:address", async (req, res) => {
   const address = req.params.address;
   const commits = await getCommitsByAddress(address);
-  res.json(commits);
-});
-
-app.get("/commits/type/:type", async (req, res) => {
-  const type = req.params.type;
-  const commits = await getCommitsByType(type);
   res.json(commits);
 });
 
@@ -73,7 +67,6 @@ app.post("/commit", async (req, res) => {
       );
   }
 
-  // Handle dynamic data object
   let dynamicData = {};
   if (data && typeof data === "object") {
     dynamicData = data;
@@ -96,5 +89,5 @@ app.post("/commit", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at ${port}`);
 });
