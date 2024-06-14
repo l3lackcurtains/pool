@@ -5,18 +5,6 @@ Welcome to theAlberti Protocol Pool! This API allows you to interact with commit
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-- [Endpoints](#endpoints)
-  - [GET /](#get-)
-  - [GET /commits](#get-commits)
-  - [GET /commits/signature/:signature](#get-commitssignaturesignature)
-  - [GET /commits/address/:address](#get-commitsaddressaddress)
-  - [GET /commits/type/:type](#get-commitstypetype)
-  - [GET /addresses](#get-addresses)
-  - [GET /count](#get-count)
-  - [GET /hashtags](#get-hashtags)
-  - [POST /commit](#post-commit)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
