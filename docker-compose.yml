@@ -5,8 +5,6 @@ services:
     container_name: pool
     restart: always
     build: .
-    env_file:
-      - stack.env
     volumes:
       - .:/usr/app/
     ports:
