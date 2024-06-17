@@ -18,6 +18,8 @@ const difficulty = process.env.ALBERTI_DIFFICULTY || 4;
 
 const nodeurl = process.env.ALBERTI_NODEURL || "http://mynodeurl:3000";
 
+const boottime = new Date();
+
 syncDatabase();
 
 app.get("/commits/:offset", async (req, res) => {
@@ -41,17 +43,6 @@ app.get("/addresses", async (req, res) => {
 app.get("/hashtags", async (req, res) => {
   const hashtags = await getHashtags();
   res.json(hashtags);
-});
-
-app.get("/", async (req, res) => {
-  const count = await countAllCommits();
-
-  res.json({
-    time: new Date(),
-    totalCommits: count,
-    difficulty: difficulty,
-    guide: "https://github.com/AlbertiProtocol/pool",
-  });
 });
 
 app.post("/commit", async (req, res) => {
@@ -87,26 +78,43 @@ app.post("/commit", async (req, res) => {
   }
 });
 
+app.get("/", async (req, res) => {
+  const count = await countAllCommits();
+
+  res.json({
+    boot_time: boottime,
+    time: new Date(),
+    totalCommits: count,
+    difficulty: difficulty,
+    nodeUrl: nodeurl,
+    guide: "https://github.com/AlbertiProtocol/pool",
+  });
+});
+
 let foundNodes = [];
 
 app.get("/nodes", async (req, res) => {
-  broadcastme();
+  broadcastme(nodeurl, difficulty);
 
-  gun
-    .get("albertipools")
-    .map()
-    .once((data) => {
-      foundNodes.push({ node: data.node, difficulty: data.difficulty });
-    });
+  try {
+    gun
+      .get("albertipools")
+      .map()
+      .once((data) => {
+        foundNodes.push({ node: data.node, difficulty: data.difficulty });
+      });
 
-  foundNodes = foundNodes.filter(
-    (v, i, a) => a.findIndex((t) => t.node === v.node) === i
-  );
+    foundNodes = foundNodes.filter(
+      (v, i, a) => a.findIndex((t) => t.node === v.node) === i
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   res.json(foundNodes);
 });
 
 app.listen(port, () => {
   console.log(`Listening at ${port}`);
-  broadcastme();
+  broadcastme(nodeurl, difficulty);
 });

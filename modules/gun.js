@@ -5,7 +5,7 @@ const gun = Gun([
   "https://gun-manhattan.herokuapp.com/gun",
 ]);
 
-function broadcastme() {
+function broadcastme(nodeurl, difficulty) {
   gun
     .get("albertipools")
     .set({ node: nodeurl, difficulty: difficulty }, (ack) => {
