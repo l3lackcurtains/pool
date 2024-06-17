@@ -16,7 +16,8 @@ const { verifyCommit } = require("alberti-protocol-sdk");
 
 const difficulty = process.env.ALBERTI_DIFFICULTY || 4;
 
-const nodeurl = process.env.ALBERTI_NODEURL || "http://mynodeurl:3000";
+const nodeurl =
+  process.env.ALBERTI_NODEURL || "https://pool.albertiprotocol.org";
 
 const boottime = new Date();
 
@@ -101,7 +102,9 @@ app.get("/nodes", async (req, res) => {
       .get("albertipools")
       .map()
       .once((data) => {
-        foundNodes.push({ node: data.node, difficulty: data.difficulty });
+        if (data) {
+          foundNodes.push({ node: data.node, difficulty: data.difficulty });
+        }
       });
 
     foundNodes = foundNodes.filter(
