@@ -10,14 +10,9 @@ const {
 
 const { app, port } = require("./modules/server");
 
-const { broadcastme, gun } = require("./modules/gun");
-
 const { verifyCommit } = require("alberti-protocol-sdk");
 
 const difficulty = process.env.ALBERTI_DIFFICULTY || 4;
-
-const nodeurl =
-  process.env.ALBERTI_NODEURL || "https://pool.albertiprotocol.org";
 
 const boottime = new Date();
 
@@ -87,37 +82,11 @@ app.get("/", async (req, res) => {
     time: new Date(),
     totalCommits: count,
     difficulty: difficulty,
-    nodeUrl: nodeurl,
+    port: port,
     guide: "https://github.com/AlbertiProtocol/pool",
   });
 });
 
-let foundNodes = [];
-
-app.get("/nodes", async (req, res) => {
-  broadcastme(nodeurl, difficulty);
-
-  try {
-    gun
-      .get("albertipools")
-      .map()
-      .once((data) => {
-        if (data) {
-          foundNodes.push({ node: data.node, difficulty: data.difficulty });
-        }
-      });
-
-    foundNodes = foundNodes.filter(
-      (v, i, a) => a.findIndex((t) => t.node === v.node) === i
-    );
-  } catch (error) {
-    console.log(error);
-  }
-
-  res.json(foundNodes);
-});
-
 app.listen(port, () => {
   console.log(`Listening at ${port}`);
-  broadcastme(nodeurl, difficulty);
 });
